@@ -40,13 +40,16 @@ export const signUp = async (req, res) => {
 
     // Create User
 
-    const newUser = User.create({ name, userName, email, password: hasedPassword });
+    const newUser = await User.create({ name, userName, email, password: hasedPassword });
     
 
      const token =  await genToken(newUser._id)
        res.cookie('token', token , {
          httpOnly:true,
-         sameSite:true,
+         
+         sameSite: "lax",  // must be "lax", not true
+         secure: false,
+         // set to true if using HTTPS
          maxAge: 30*24*60*60*1000 // 30 days
      })
 
@@ -86,7 +89,8 @@ export const signIn = async (req, res) => {
 
      res.cookie('token', token , {
          httpOnly:true,
-         sameSite:true,
+         sameSite:"lax",
+         secure: false,
          maxAge: 30*24*60*60*1000 // 30 days
      })
 
